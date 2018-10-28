@@ -28,6 +28,28 @@ Arguments:
 - `[ Hi Hello Hey ]` Possibilities for first argument are "Hi", "Hello" and "Hey"
 - `[ Alex Bert Chris ]` Options for the second argument
 
+## Nested example
+```
+$ cmbrk -v touch [ -[ dirs.txt ] / [ file1 file2 file 3] ]
+exec: touch dir1/file1
+exec: touch dir1/file2
+exec: touch dir1/file3
+exec: touch dir2/file1
+exec: touch dir2/file2
+exec: touch dir2/file3
+exec: touch dir3/file1
+exec: touch dir3/file2
+exec: touch dir3/file3
+```
+
+Arguments:
+- `-v` Increase verbosity to 1 to show commands executed
+- `touch` The command to run
+- `[ ... ]` Nested arguments, they will be combined without spaces
+- `-[ dirs.txt ]` Read these arguments from the file `dirs.txt`
+- `/` Add a `/` between the dir and file
+- `[ file1 file2 file3 ]` Files to create in each directory
+
 ## Complex example
 Find a valid match of an RSA private key, encrypted packet and its padding.
 
