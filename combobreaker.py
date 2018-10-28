@@ -48,10 +48,13 @@ def listGroups(cmds, d=0):
 def parseCmdArguments():
     parser = argparse.ArgumentParser()
     parser.formatter_class=argparse.RawDescriptionHelpFormatter
-    parser.usage = '{:s} [options] <command> [args]'.format(sys.argv[0])
-    parser.description = 'Supply options for arguments to expand between [ and ], e.g.:\n\n' +\
-        '- {:s} echo [ Hi Hello ] [ Alex Bob ]\n'.format(sys.argv[0]) +\
-        'Hi Alex\nHi Bob\nHello Alex\nHello Bob'
+    parser.usage = '%(prog)s [options] <command> [args]'
+    parser.description = 'Combinations of arguments between [ and ] will be executed, e.g.:\n\n' +\
+        '%(prog)s echo [ Hi Hello ] [ Alex Bob ]\n' +\
+        'Hi Alex\nHi Bob\nHello Alex\nHello Bob\n\n' +\
+        'Use -[ files ... ] to read arguments from specified file(s)'
+    parser._optionals.title = 'options'
+
     parser.add_argument('-v', '--verbose', action='count',
         help='Increase verbosity, use multiple times to increase more (-vv)')
     parser.add_argument('-s', '--silent', action='count', default=0,
@@ -66,7 +69,7 @@ def parseCmdArguments():
         help='Break execution when stdout matches MATACH')
     parser.add_argument('-M', '--nomatch', type=str, action='append', metavar='MATCH', default=[],
         help='Break execution when stdout doesn\'t match MATACH')
-    parser.add_argument('cmd_args', nargs=argparse.REMAINDER)
+    parser.add_argument('cmd_args', nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
     args = vars(parser.parse_args())
     if '--' in args['cmd_args']: args['cmd_args'].remove('--')
