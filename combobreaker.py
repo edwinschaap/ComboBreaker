@@ -3,6 +3,9 @@
 import sys
 import argparse
 import subprocess
+from time import sleep
+from functools import reduce
+from operator import mul
 
 class GroupingException(Exception):
     pass
@@ -37,6 +40,8 @@ def parseCmdArguments():
         help='Increase verbosity, use multiple times to increase more (-vv)')
     parser.add_argument('-s', '--silent', action='count', default=0,
         help='Silence stdout of called command. -ss silences stderr and -sss silences both')
+    parser.add_argument('-c', '--count', action='store_true', default=False,
+        help='Show number of commands before executing. Number of combinations can grow really fast. This allows you to reconsider before actually starting')
     parser.add_argument('-z', '--zero', action='store_true',
         help='Break execution on first 0 exit code')
     parser.add_argument('-Z', '--notzero', action='store_true',
@@ -86,7 +91,17 @@ def allMatch(text, matches):
 
 if __name__ == '__main__':
     options = parseCmdArguments()
-    print(options)
+    #print(options)
+
+    if options['count']:
+        countCmds = reduce(mul, [len(i) for i in options['cmd_args'] if isinstance(i, list)])
+        sys.stdout.write("Executing {:d} commands in ".format(countCmds))
+        for i in range(3, 0, -1):
+            sys.stdout.write("{:d}  ".format(i))
+            sys.stdout.flush()
+            sleep(1)
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
     combobreaker = None
     
