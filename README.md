@@ -54,3 +54,34 @@ Arguments:
 - `-in` Following argument will be the file to decrypt
 - `[ data*.enc ]` Expanded by shell to all data files
 - `[ -ssl -pkcs -oaep -x931 ]` Different padding options to try
+
+## Usage
+```
+usage: cmbrk [options] <command> [args]
+
+Combinations of arguments between [ and ] will be executed, e.g.:
+
+cmbrk echo [ Hi Hello ] [ Alex Bob ]
+Hi Alex
+Hi Bob
+Hello Alex
+Hello Bob
+
+Use -[ files ... ] to read arguments from specified file(s)
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         Increase verbosity, use multiple times to increase
+                        more (-vv)
+  -s, --silent          Silence stdout of called command. -ss silences stderr
+                        and -sss silences both
+  -c, --count           Show number of commands before executing. Number of
+                        combinations can grow really fast. This allows you to
+                        reconsider before actually starting
+  -z, --zero            Break execution on first 0 exit code
+  -Z, --notzero         Break execution on first none 0 exit code
+  -m MATCH, --match MATCH
+                        Break execution when stdout matches MATACH
+  -M MATCH, --nomatch MATCH
+                        Break execution when stdout doesn't match MATACH
+```
