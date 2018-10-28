@@ -2,6 +2,13 @@
 
 Executes commands with all combinations of supplied arguments.
 
+## Installation
+- Clone the repo or download [combobreaker.py](https://raw.githubusercontent.com/qistoph/ComboBreaker/master/combobreaker.py).
+- Make it executable `chmod +x combobreaker.py`
+- To make cmbrk available system wide:
+  - `sudo cp combobreaker.py /usr/local/bin/cmbrk`
+  - `chmod 755 /usr/local/bin/cmbrk`
+
 ## Simple example
 ```
 $ cmbrk echo [ Hi Hello Hey ] [ Alex Bert Chris ]
