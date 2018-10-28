@@ -13,7 +13,6 @@ class GroupingException(Exception):
 def getArgsFromFile(filename):
     f = open(filename, 'r')
     lines = [l.strip() for l in f]
-    print(lines)
     return lines
 
 def listGroups(cmds, d=0):
@@ -22,11 +21,14 @@ def listGroups(cmds, d=0):
     depth = 0
     start = -1
     fromFile = False
+    hasNested = False
     while i < len(cmds):
         if cmds[i] == '[' or cmds[i] == "-[":
             if depth == 0:
                 start = i
                 fromFile = cmds[i] == "-["
+            else:
+                hasNested = True
             depth += 1
         if cmds[i] == ']':
             depth -= 1
@@ -36,6 +38,8 @@ def listGroups(cmds, d=0):
                 sub = listGroups(cmds[start+1:i], d+1)
                 if fromFile:
                     sub = [line for f in sub for line in getArgsFromFile(f)]
+                if d == 0 and hasNested:
+                    sub = ["".join(g) for g in generator(sub)]
                 cmds[start:i+1] = [sub]
                 #print(cmds)
                 i = start
@@ -49,10 +53,13 @@ def parseCmdArguments():
     parser = argparse.ArgumentParser()
     parser.formatter_class=argparse.RawDescriptionHelpFormatter
     parser.usage = '%(prog)s [options] <command> [args]'
-    parser.description = 'Combinations of arguments between [ and ] will be executed, e.g.:\n\n' +\
+    parser.description = 'Combinations of arguments between [ and ] will be iterated, e.g.:\n' +\
         '%(prog)s echo [ Hi Hello ] [ Alex Bob ]\n' +\
         'Hi Alex\nHi Bob\nHello Alex\nHello Bob\n\n' +\
-        'Use -[ files ... ] to read arguments from specified file(s)'
+        'Use -[ files ... ] to read arguments from specified file(s), e.g.:\n' +\
+        '%(prog)s echo -[ saluts.txt ] -[ names.txt ]\n\n' +\
+        'Nested args are combined into 1 argument, e.g.:\n' +\
+        '%(prog)s touch [ [ dir1 dir2 dir3 ] / [ file1 file2 file3 ] ]'
     parser._optionals.title = 'options'
 
     parser.add_argument('-v', '--verbose', action='count',

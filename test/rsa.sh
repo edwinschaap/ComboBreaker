@@ -1,7 +1,7 @@
 dirname ${BASH_SOURCE[0]}
 
 for i in {0..9}; do
-	#openssl genrsa 2048 > private$i.pem;
+	openssl genrsa 2048 > private$i.pem;
 	dd if=/dev/urandom of=data$i.enc bs=256 count=1
 done
 
