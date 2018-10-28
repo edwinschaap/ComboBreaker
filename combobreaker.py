@@ -46,9 +46,9 @@ def parseCmdArguments():
         help='Break execution on first 0 exit code')
     parser.add_argument('-Z', '--notzero', action='store_true',
         help='Break execution on first none 0 exit code')
-    parser.add_argument('-m', '--match', type=str, action='append',
+    parser.add_argument('-m', '--match', type=str, action='append', default=[],
         help='Break execution when stdout matches MATACH')
-    parser.add_argument('-M', '--nomatch', type=str, action='append', metavar='MATCH',
+    parser.add_argument('-M', '--nomatch', type=str, action='append', metavar='MATCH', default=[],
         help='Break execution when stdout doesn\'t match MATACH')
     parser.add_argument('cmd_args', nargs=argparse.REMAINDER)
 
@@ -126,10 +126,10 @@ if __name__ == '__main__':
         if ret != 0 and options['notzero']:
             combobreaker = "C-C-C-Combo Breaker! Exit code is not 0."
             break
-        if options['match'] is not None and anyMatch(out, options['match']):
+        if anyMatch(out, options['match']):
             combobreaker = "C-C-C-Combo Breaker! Output matched."
             break
-        if options['nomatch'] is not None and not allMatch(out, options['nomatch']):
+        if not allMatch(out, options['nomatch']):
             combobreaker = "C-C-C-Combo Breaker! Output didn't match."
             break
         
