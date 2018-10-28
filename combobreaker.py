@@ -10,14 +10,23 @@ from operator import mul
 class GroupingException(Exception):
     pass
 
+def getArgsFromFile(filename):
+    f = open(filename, 'r')
+    lines = [l.strip() for l in f]
+    print(lines)
+    return lines
+
 def listGroups(cmds, d=0):
     #print('listGroups(', cmds, ')')
     i = 0
     depth = 0
     start = -1
+    fromFile = False
     while i < len(cmds):
-        if cmds[i] == '[':
-            if depth == 0: start = i
+        if cmds[i] == '[' or cmds[i] == "-[":
+            if depth == 0:
+                start = i
+                fromFile = cmds[i] == "-["
             depth += 1
         if cmds[i] == ']':
             depth -= 1
@@ -25,6 +34,8 @@ def listGroups(cmds, d=0):
             if depth == 0:
                 #print('[ ] match {:d}, {:d}'.format(start, i))
                 sub = listGroups(cmds[start+1:i], d+1)
+                if fromFile:
+                    sub = [line for f in sub for line in getArgsFromFile(f)]
                 cmds[start:i+1] = [sub]
                 #print(cmds)
                 i = start
