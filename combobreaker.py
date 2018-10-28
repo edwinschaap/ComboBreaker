@@ -47,6 +47,11 @@ def listGroups(cmds, d=0):
 
 def parseCmdArguments():
     parser = argparse.ArgumentParser()
+    parser.formatter_class=argparse.RawDescriptionHelpFormatter
+    parser.usage = '{:s} [options] <command> [args]'.format(sys.argv[0])
+    parser.description = 'Supply options for arguments to expand between [ and ], e.g.:\n\n' +\
+        '- {:s} echo [ Hi Hello ] [ Alex Bob ]\n'.format(sys.argv[0]) +\
+        'Hi Alex\nHi Bob\nHello Alex\nHello Bob'
     parser.add_argument('-v', '--verbose', action='count',
         help='Increase verbosity, use multiple times to increase more (-vv)')
     parser.add_argument('-s', '--silent', action='count', default=0,
