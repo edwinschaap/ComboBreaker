@@ -88,15 +88,20 @@ Arguments:
 ```
 usage: cmbrk [options] <command> [args]
 
-Combinations of arguments between [ and ] will be executed, e.g.:
-
+Combinations of arguments between [ and ] will be iterated.
+Note that spaces around the brackets are mandatory. Some examples:
 cmbrk echo [ Hi Hello ] [ Alex Bob ]
 Hi Alex
 Hi Bob
 Hello Alex
 Hello Bob
 
-Use -[ files ... ] to read arguments from specified file(s)
+Use -[ files ... ] to read arguments from specified file(s), e.g.:
+cmbrk echo -[ saluts.txt ] -[ names.txt ]
+
+Nested args are combined into 1 argument, e.g.:
+cmbrk touch [ [ dir1 dir2 dir3 ] / [ file1 file2 file3 ] ]
+Creates dir1/file1, dir1/file2, dir1/file3 etc
 
 options:
   -h, --help            show this help message and exit
@@ -110,7 +115,7 @@ options:
   -z, --zero            Break execution on first 0 exit code
   -Z, --notzero         Break execution on first none 0 exit code
   -m MATCH, --match MATCH
-                        Break execution when stdout matches MATACH
+                        Break execution when stdout matches MATCH
   -M MATCH, --nomatch MATCH
-                        Break execution when stdout doesn't match MATACH
+                        Break execution when stdout doesn't match MATCH
 ```

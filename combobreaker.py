@@ -53,13 +53,14 @@ def parseCmdArguments():
     parser = argparse.ArgumentParser()
     parser.formatter_class=argparse.RawDescriptionHelpFormatter
     parser.usage = '%(prog)s [options] <command> [args]'
-    parser.description = 'Combinations of arguments between [ and ] will be iterated, e.g.:\n' +\
+    parser.description = 'Combinations of arguments between [ and ] will be iterated.\nNote that spaces around the brackets are mandatory. Some examples:\n' +\
         '%(prog)s echo [ Hi Hello ] [ Alex Bob ]\n' +\
         'Hi Alex\nHi Bob\nHello Alex\nHello Bob\n\n' +\
         'Use -[ files ... ] to read arguments from specified file(s), e.g.:\n' +\
         '%(prog)s echo -[ saluts.txt ] -[ names.txt ]\n\n' +\
         'Nested args are combined into 1 argument, e.g.:\n' +\
-        '%(prog)s touch [ [ dir1 dir2 dir3 ] / [ file1 file2 file3 ] ]'
+        '%(prog)s touch [ [ dir1 dir2 dir3 ] / [ file1 file2 file3 ] ]\n' +\
+        'Creates dir1/file1, dir1/file2, dir1/file3 etc\n'
     parser._optionals.title = 'options'
 
     parser.add_argument('-v', '--verbose', action='count',
@@ -73,9 +74,9 @@ def parseCmdArguments():
     parser.add_argument('-Z', '--notzero', action='store_true',
         help='Break execution on first none 0 exit code')
     parser.add_argument('-m', '--match', type=str, action='append', default=[],
-        help='Break execution when stdout matches MATACH')
+        help='Break execution when stdout matches MATCH')
     parser.add_argument('-M', '--nomatch', type=str, action='append', metavar='MATCH', default=[],
-        help='Break execution when stdout doesn\'t match MATACH')
+        help='Break execution when stdout doesn\'t match MATCH')
     parser.add_argument('cmd_args', nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
     args = vars(parser.parse_args())
