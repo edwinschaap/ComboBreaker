@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import re
 import sys
 import argparse
 import subprocess
@@ -74,9 +75,13 @@ def parseCmdArguments():
     parser.add_argument('-Z', '--notzero', action='store_true',
         help='Break execution on first none 0 exit code')
     parser.add_argument('-m', '--match', type=str, action='append', default=[],
-        help='Break execution when stdout matches MATCH')
+        help='Break execution if stdout matches MATCH')
     parser.add_argument('-M', '--nomatch', type=str, action='append', metavar='MATCH', default=[],
-        help='Break execution when stdout doesn\'t match MATCH')
+        help='Break execution if stdout doesn\'t match MATCH')
+    parser.add_argument('-r', '--regex', type=str, action='append', metavar='REGEX', default=[],
+        help='Break execution if stdout matches REGEX (case insens.)')
+    parser.add_argument('-R', '--noregex', type=str, action='append', metavar='REGEX', default=[],
+        help='Break execution if stdout doesn\'t match REGEX (case insens.)')
     parser.add_argument('cmd_args', nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
     args = vars(parser.parse_args())
@@ -113,6 +118,18 @@ def anyMatch(text, matches):
 def allMatch(text, matches):
     for m in matches:
         if m.encode('utf-8') not in text:
+            return False
+    return True
+
+def anyRegex(text, regexes):
+    for r in regexes:
+        if len(re.findall(r.encode('utf-8'), text), re.IGNORECASE) > 0:
+            return True
+    return False
+
+def allRegex(text, regexes):
+    for r in regexes:
+        if len(re.findall(r.encode('utf-8'), text), re.IGNORECASE) == 0:
             return False
     return True
 
@@ -158,6 +175,12 @@ if __name__ == '__main__':
             break
         if not allMatch(out, options['nomatch']):
             combobreaker = "C-C-C-Combo Breaker! Output didn't match."
+            break
+        if anyRegex(out, options['regex']):
+            combobreaker = "C-C-C-Combo Breaker! Output matched regex."
+            break
+        if not allRegex(out, options['noregex']):
+            combobreaker = "C-C-C-Combo Breaker! Output didn't match regex."
             break
         
     if combobreaker:
